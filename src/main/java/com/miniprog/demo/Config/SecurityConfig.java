@@ -30,8 +30,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(customizer -> customizer.disable())
+                .logout(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("login")
+                        .requestMatchers("login", "getTokenStatus")
                         .permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())

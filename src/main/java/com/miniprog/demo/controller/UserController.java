@@ -1,8 +1,13 @@
 package com.miniprog.demo.controller;
 
+import com.miniprog.demo.Service.JWTService;
+import com.miniprog.demo.Service.TokenService;
 import com.miniprog.demo.Service.UserService;
+import com.miniprog.demo.model.Token;
 import com.miniprog.demo.model.User;
+import com.miniprog.demo.repo.TokenRepo;
 import com.miniprog.demo.repo.UserRepo;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +18,13 @@ public class UserController {
     private UserRepo userRepo;
 
     @Autowired
-    private UserService userService;
+    UserService userService;
+
+    @Autowired
+    TokenRepo tokenRepo;
+
+    @Autowired
+    TokenService tokenService;
 
     @GetMapping("/getUser/{username}")
     public String getUser(@PathVariable String username) {
@@ -22,14 +33,8 @@ public class UserController {
     }
 
     @PostMapping("/saveUser")
-    public String getUser(@RequestBody User user) {
+    public String saveUser(@RequestBody User user) {
         userRepo.save(user);
         return "User saved, username: " + user.getUsername();
-    }
-
-    @PostMapping("/login")
-    public String login(@RequestBody User user) {
-        return userService.verify(user);
-//        return "success";
     }
 }

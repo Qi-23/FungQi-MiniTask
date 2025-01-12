@@ -20,4 +20,13 @@ public class Token {
     @Indexed(unique = true)
     private String token;
 
+    private String username;
+    private String status;
+
+    public Token (String token, String username, String status) {
+        this.token = token;
+        this.username = username;
+        this.status = status;
+    }
+
 }

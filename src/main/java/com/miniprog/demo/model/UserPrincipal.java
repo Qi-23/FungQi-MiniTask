@@ -11,9 +11,6 @@ import java.util.Collections;
 
 public class UserPrincipal implements UserDetails {
 
-    @Autowired
-    UserRepo userRepo;
-
     private User user;
 
     public UserPrincipal(User user) {

@@ -1,9 +1,12 @@
 package com.miniprog.demo.Service;
 
+import com.miniprog.demo.model.Token;
+import com.miniprog.demo.repo.TokenRepo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,10 @@ import java.util.function.Function;
 
 @Service
 public class JWTService {
+
+    @Autowired
+    private TokenRepo tokenRepo;
+
     private String secretKey;
 
     public JWTService() {
@@ -26,7 +33,7 @@ public class JWTService {
             SecretKey sk = keyGen.generateKey();
             secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error generating secret key", e);
         }
     }
 
@@ -68,7 +75,8 @@ public class JWTService {
 
     public boolean validateToken(String token, UserDetails userDetails) {
         final String userName = extractUsername(token);
-        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        Token tokenObj = tokenRepo.findByToken(token);
+        return (!tokenObj.getStatus().equals("logout") && userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     public boolean isTokenExpired(String token) {
