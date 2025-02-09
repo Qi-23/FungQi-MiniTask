@@ -17,11 +17,16 @@ public class UserService {
     JWTService jwtService;
 
     public String verify (User user) {
-        Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-
-        if(authentication.isAuthenticated())
-            return jwtService.generateToken(user.getUsername());
-
+        try {
+            Authentication authentication = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+            );
+            if (authentication.isAuthenticated()) {
+                return jwtService.generateToken(user.getUsername());
+            }
+        } catch (Exception e) {
+            return "fail";
+        }
         return "fail";
     }
 }

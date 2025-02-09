@@ -1,13 +1,10 @@
 package com.miniprog.demo.controller;
 
-import com.miniprog.demo.Service.JWTService;
 import com.miniprog.demo.Service.TokenService;
 import com.miniprog.demo.Service.UserService;
-import com.miniprog.demo.model.Token;
 import com.miniprog.demo.model.User;
 import com.miniprog.demo.repo.TokenRepo;
 import com.miniprog.demo.repo.UserRepo;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

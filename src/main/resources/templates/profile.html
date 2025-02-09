@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        button {
+            margin: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<h1>Profile</h1>
+<p>Welcome, <span th:text="${username}"></span>!</p>
+<p>This is your token: <span th:text="${token}"></span></p>
+<button id="logoutButton">Logout</button>
+<button onclick="window.location.href='/'">Home</button>
+<input type="hidden" id="tokenData" th:data-token="${token}"/>
+
+<script>
+    function getUrl(url, token) {
+         fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`
+            }
+         })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                return response.text();
+            }
+        })
+        .then(html => {
+            if (html) {
+                document.open();
+                document.write(html);
+                document.close();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+     }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const token = document.getElementById('tokenData').getAttribute('data-token');
+        localStorage.setItem('authToken', token);
+
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            const token = localStorage.getItem('authToken');
+            localStorage.removeItem('authToken');
+            getUrl('/logout', token);
+        });
+    });
+</script>
+</body>
+</html>

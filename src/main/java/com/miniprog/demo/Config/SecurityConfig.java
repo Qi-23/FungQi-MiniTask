@@ -32,12 +32,20 @@ public class SecurityConfig {
                 .csrf(customizer -> customizer.disable())
                 .logout(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("login", "getTokenStatus")
+                        .requestMatchers("login", "getTokenStatus", "/", "notAuth")
                         .permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendRedirect("/notAuth");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendRedirect("/notAuth");
+                        })
+                )
                 .build();
     }
 

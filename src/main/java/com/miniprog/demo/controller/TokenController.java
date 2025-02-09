@@ -1,22 +1,19 @@
 package com.miniprog.demo.controller;
 
-import com.miniprog.demo.Service.TokenService;
 import com.miniprog.demo.model.Token;
-import com.miniprog.demo.model.User;
 import com.miniprog.demo.repo.TokenRepo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 public class TokenController {
     @Autowired
     TokenRepo tokenRepo;
 
     @PostMapping("/getTokenStatus")
+    @ResponseBody
     public String getTokenStatus(@RequestBody String token, HttpServletRequest request) {
         Token tokenObj = tokenRepo.findByToken(token);
         if (tokenObj == null) {
@@ -24,5 +21,10 @@ public class TokenController {
         }
 
         return "Token status: " + tokenObj.getStatus();
+    }
+
+    @GetMapping("/validateToken")
+    public String validateToken() {
+        return "profile";
     }
 }

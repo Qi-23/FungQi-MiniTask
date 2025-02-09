@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<h1>Home</h1>
+<button onclick="window.location.href='/login'">Login</button>
+<button id="profileButton">Profile</button>
+</body>
+</html>
+<script>
+    function postUrl(url, token) {
+         fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', 'Authorization': `${token}`
+            }
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                return response.text();
+            }
+        })
+        .then(html => {
+            if (html) {
+                document.open();
+                document.write(html);
+                document.close();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+     }
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementById('profileButton').addEventListener('click', () => {
+            const form = document.getElementById('profileHiddenForm');
+            const token = localStorage.getItem('authToken');
+
+            if (token != null && token != "" && token != "null") {
+                postUrl('/userProfile', "Bearer " + token);
+            } else {
+                postUrl('/userProfile', null);
+            }
+        });
+    });
+</script>
